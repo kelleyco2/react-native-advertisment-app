@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, TouchableHighlight } from 'react-native';
 import Data from './listings'
 import Icon from 'react-native-vector-icons/MaterialIcons' 
 import { createAppContainer, createDrawerNavigator } from 'react-navigation' 
@@ -65,6 +65,10 @@ class Listing extends React.Component {
     this.props.navigation.navigate('MyScreen')
   }
 
+  navigateScreenPreview = () => {
+    this.props.navigation.navigate('ScreenPreview')
+  }
+
   render() {
     return (
       <View style={{paddingTop: 40}}>
@@ -91,20 +95,33 @@ class Listing extends React.Component {
             Rate: $0.50 Per Mile
           </Text>
           <Image source={require('./map.png')} style={{width: '90%', height: 300, marginLeft: '5%', marginTop: '5%', borderRadius: 5}}/>
-          <Image source={require('./walmartAd.jpg')} style={{width: '90%', height: 200, marginLeft: '5%', marginTop: '5%', marginBottom: '40%', borderRadius: 5}}/>
+          <TouchableHighlight onPress={this.navigateScreenPreview}>
+            <Image source={require('./walmartAd.jpg')} style={{width: '90%', height: 200, marginLeft: '5%', marginTop: '5%', marginBottom: '40%', borderRadius: 5}}/>
+          </TouchableHighlight>
         </ScrollView>
       </View>
     );
   }
 }
 
+class ScreenPreview extends React.Component {
+  render(){
+    return (
+      <View>
+        <Image source={require('./walmartAd.jpg')} style={{width: '90%', height: 200, marginLeft: '5%', marginTop: '40%', borderWidth: 10, borderColor: 'black'}}/>
+      </View>
+    )
+  }
+}
+
 class MyScreen extends React.Component {
   state = {
-    distance: 30
+    distance: 30,
+    map: false
   }
   render() {
     return (
-      <View style={{paddingTop: 40}}>
+      <ScrollView style={{paddingTop: 40}}>
         <View style={styles.icons}>
           <Icon 
           name='menu'
@@ -116,18 +133,38 @@ class MyScreen extends React.Component {
           />
         </View>
         <View>
-          <Image source={require('./walmartAd.jpg')} style={{width: '90%', height: 200, marginLeft: '5%', marginTop: '10%', borderWidth: 10, borderColor: 'black'}}/>
-          <Text style={{fontSize: 24}}>
+          <Image source={require('./walmartAd.jpg')} style={{width: '90%', height: 200, marginLeft: '5%', marginTop: '5%', borderWidth: 10, borderColor: 'black'}}/>
+          <Text style={{fontSize: 24, marginLeft: '5%', marginTop: '5%'}}>
             Rate: $0.50 Per Mile
           </Text>
-          <Text>
+          <Text style={{fontSize: 24, marginLeft: '5%', marginTop: '3%'}}>
             Distance: {this.state.distance} Miles
           </Text>
-          <Text>
+          <Text style={{fontSize: 24, marginLeft: '5%', marginTop: '3%'}}>
             Total: ${this.state.distance * 0.5}
           </Text>
+          <TouchableOpacity style={{width: '90%', borderWidth: 1, borderColor: 'black', marginLeft: '5%', marginTop: '5%', borderRadius: 5, padding: 8}}>
+            <Text style={{fontSize: 24, textAlign: 'center'}}>
+              Finish
+            </Text>
+          </TouchableOpacity>
+          {
+            this.state.map ? 
+            <TouchableOpacity style={{width: '90%', borderWidth: 1, borderColor: 'black', marginLeft: '5%', marginTop: '5%', marginBottom: '20%', borderRadius: 5, padding: 8}} onPress={() => {this.setState({map: !this.state.map})}}>
+              <Text style={{fontSize: 24, textAlign: 'center'}}>
+                Close Map
+              </Text>
+              <Image source={require('./map.png')} style={{width: '90%', height: 300, marginLeft: '5%', marginTop: '5%', marginBottom: '5%', borderRadius: 5}}/>
+            </TouchableOpacity>
+            :
+            <TouchableOpacity style={{width: '90%', borderWidth: 1, borderColor: 'black', marginLeft: '5%', marginTop: '5%', borderRadius: 5, padding: 8}} onPress={() => {this.setState({map: !this.state.map})}}>
+              <Text style={{fontSize: 24, textAlign: 'center'}}>
+                Open Map
+              </Text>
+            </TouchableOpacity>
+          }
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -138,6 +175,7 @@ const AppDrawerNavigator = createDrawerNavigator({
   MyScreen,
   Home,
   Listing,
+  ScreenPreview,
 })
 
 const AppContainer = createAppContainer(AppDrawerNavigator)
